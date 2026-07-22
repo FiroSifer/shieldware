@@ -1,0 +1,16 @@
+platfrom=affichage des metriques du serveur on temps reel=detection des anomalie a travers de ces metrics on utilisant AI=chatbot to help the user=utilisation du docker et git=
+
+
+1-comprendre comment git et Docker fonctionne exactement pour les utilise.
+2-faire une prototype de platform qui recupere les metric de plusieurs appareils.
+3-Implimenter l'agent Ai qui va faire le diagnostic et le detection des anomalies.
+4-cree le chatbot qui va recuperer comme base un document et les metric du system et responds au question d'utilisateur.
+5-rafinement du projet.
+6-informe sur le startup.
+7-rediger le rapport.
+
+
+3-days: docker and git.
+2-3 days: porotype de platform.
+7 days: agent AI.
+7 days: chatbot.
