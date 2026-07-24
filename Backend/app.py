@@ -7,11 +7,11 @@ import asyncio
 
 app=FastAPI()
 
-app.mount("/static", StaticFiles(directory="../frontend"), name="static")
+app.mount("/static", StaticFiles(directory="./Frontend/static"), name="static")
 
 @app.get("/")
 async def home():
-    return FileResponse("../Frontend/index.html")
+    return FileResponse("./Frontend/index.html")
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket : WebSocket):

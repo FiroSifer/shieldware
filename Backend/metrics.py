@@ -24,11 +24,13 @@ def get_metrics():
             w = wmi.WMI(namespace="root\\wmi")
             temp_info = w.MSAcpi_ThermalZoneTemperature()
             if temp_info:
+                print(temp_info)
                 # WMI returns temperature in deci-Kelvins. Formula: (dK / 10) - 273.15
                 deci_kelvin = temp_info[0].CurrentTemperature
                 return round((deci_kelvin / 10.0) - 273.15, 2)
             return 0.0
-        except Exception:
+        except Exception as e:
+            print(e)
             # Returns 0.0 if access is denied or hardware doesn't support it
             return 0.0
     
@@ -36,7 +38,7 @@ def get_metrics():
     d["ram_usage"]=p.virtual_memory().percent
     d["gpu_usage"]=get_intel_gpu_usage_percent()
     d["active_process"]=len(p.pids())
-    d["disk_space"]=p.disk_usage(drive="C:\\").percent
+    d["disk_space"]=p.disk_usage("C:\\").percent
     d["disk_read"]=p.disk_io_counters().read_bytes
     d["disk_write"]=p.disk_io_counters().write_bytes
     d["network_sent"]=p.net_io_counters().bytes_sent
