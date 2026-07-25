@@ -1,4 +1,5 @@
 const socket = new WebSocket("ws://127.0.0.1:8000/ws");
+console.log("connected");
 const cpu = document.getElementById("cpu_usage");
 const gpu = document.getElementById("gpu_usage");
 const ram = document.getElementById("ram_usage");

@@ -1,7 +1,7 @@
 import psutil as p
 import wmi
 def get_metrics():
-    d={}
+    metrics={}
     def get_intel_gpu_usage_percent():
         try:
             w = wmi.WMI()
@@ -24,7 +24,6 @@ def get_metrics():
             w = wmi.WMI(namespace="root\\wmi")
             temp_info = w.MSAcpi_ThermalZoneTemperature()
             if temp_info:
-                print(temp_info)
                 # WMI returns temperature in deci-Kelvins. Formula: (dK / 10) - 273.15
                 deci_kelvin = temp_info[0].CurrentTemperature
                 return round((deci_kelvin / 10.0) - 273.15, 2)
@@ -34,18 +33,18 @@ def get_metrics():
             # Returns 0.0 if access is denied or hardware doesn't support it
             return 0.0
     
-    d["cpu_usage"]=p.cpu_percent(interval=0.1)
-    d["ram_usage"]=p.virtual_memory().percent
-    d["gpu_usage"]=get_intel_gpu_usage_percent()
-    d["active_process"]=len(p.pids())
-    d["disk_space"]=p.disk_usage("C:\\").percent
-    d["disk_read"]=p.disk_io_counters().read_bytes
-    d["disk_write"]=p.disk_io_counters().write_bytes
-    d["network_sent"]=p.net_io_counters().bytes_sent
-    d["network_received"]=p.net_io_counters().bytes_recv
-    d["system_temp"]=get_system_temperature_celsius()
+    metrics["cpu_usage"]=p.cpu_percent(interval=0.1)
+    metrics["ram_usage"]=p.virtual_memory().percent
+    metrics["gpu_usage"]=get_intel_gpu_usage_percent()
+    metrics["active_process"]=len(p.pids())
+    metrics["disk_space"]=p.disk_usage("C:\\").percent
+    metrics["disk_read"]=p.disk_io_counters().read_bytes
+    metrics["disk_write"]=p.disk_io_counters().write_bytes
+    metrics["network_sent"]=p.net_io_counters().bytes_sent
+    metrics["network_received"]=p.net_io_counters().bytes_recv
+    metrics["system_temp"]=get_system_temperature_celsius()
 
-    return d
+    return metrics
 
 
 
