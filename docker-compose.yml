@@ -1,0 +1,14 @@
+services:
+  backend:
+    container_name: backend
+    build: ./Backend
+    ports:
+      - "8000:8000"
+
+  frontend:
+    container_name: frontend
+    build: ./Frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"  

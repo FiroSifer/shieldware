@@ -1,4 +1,4 @@
-const socket = new WebSocket("ws://127.0.0.1:8000/ws");
+const socket = new WebSocket("ws://" + window.location.host + "/ws");
 console.log("connected");
 const cpu = document.getElementById("cpu_usage");
 const gpu = document.getElementById("gpu_usage");
@@ -11,6 +11,7 @@ const disk_sent = document.getElementById("disk_sent");
 const disk_rec = document.getElementById("disk_rec");
 const pids = document.getElementById("pids");
 socket.onmessage = function(event){
+console.log("recieved data from backend");   
 let m = JSON.parse(event.data);
 cpu.textContent = m.cpu_usage;
 gpu.textContent = m.gpu_usage;
