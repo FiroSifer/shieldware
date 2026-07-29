@@ -1,7 +1,43 @@
 import psutil as p
 import wmi
+import time
+
 def get_metrics():
     metrics={}
+
+    current_interrupts_per_sec=p.cpu_stats().interrupts
+    current_cpu_contx_switch=p.cpu_stats().ctx_switches
+
+    current_disk_read_bytes=p.disk_io_counters().read_bytes
+    current_disk_write_bytes=p.disk_io_counters().write_bytes
+    current_disk_read_ops=p.disk_io_counters().read_count
+    current_disk_write_ops=p.disk_io_counters().write_count
+
+    current_network_sent_bytes=p.net_io_counters().bytes_sent
+    current_network_rec_bytes=p.net_io_counters().bytes_recv
+    current_network_sent_packet=p.net_io_counters().packets_sent
+    current_network_rec_packet=p.net_io_counters().packets_recv
+
+    current_time=time.time()
+    
+    if not hasattr(get_metrics,"last_time"):
+        get_metrics.last_interrupts_per_sec=current_interrupts_per_sec
+        get_metrics.last_cpu_contx_switch=current_cpu_contx_switch
+        get_metrics.last_disk_read_bytes=current_disk_read_bytes
+        get_metrics.last_disk_write_bytes=current_disk_write_bytes
+        get_metrics.last_disk_read_ops=current_disk_read_ops
+        get_metrics.last_disk_write_ops=current_disk_write_ops
+        get_metrics.last_network_sent_bytes=current_network_sent_bytes
+        get_metrics.last_network_rec_bytes=current_network_rec_bytes
+        get_metrics.last_network_sent_packet=current_network_sent_packet
+        get_metrics.last_network_rec_packet=current_network_rec_packet
+        get_metrics.last_time=current_time
+        return 0.0
+
+    dt=current_time-get_metrics.last_time
+    if dt<0:
+        return 0.0
+
     def get_intel_gpu_usage_percent():
         try:
             w = wmi.WMI()
@@ -32,19 +68,61 @@ def get_metrics():
             print(e)
             # Returns 0.0 if access is denied or hardware doesn't support it
             return 0.0
-    
+    #CPU Metrics
     metrics["cpu_usage"]=p.cpu_percent(interval=0.1)
+    metrics["cpu_freq"]=p.cpu_freq().current
+    metrics["cpu_user_time"]=p.cpu_times().user
+    metrics["cpu_system_time"]=p.cpu_times().system
+    metrics["cpu_idle_time"]=p.cpu_times().idle
+    metrics["interrupts_per_sec"]=(current_interrupts_per_sec-get_metrics.last_interrupts_per_sec)/dt
+    metrics["cpu_contx_switch"]=(current_cpu_contx_switch-get_metrics.last_cpu_contx_switch)/dt
+    metrics["cpu_temp"]=get_system_temperature_celsius()
+
+    #RAM Metrics
     metrics["ram_usage"]=p.virtual_memory().percent
+    metrics["ram_total"]=p.virtual_memory().total
+    metrics["ram_used"]=p.virtual_memory().used
+    metrics["ram_available"]=p.virtual_memory().available
+    metrics["page_faults_per_sec"]=p.Process().memory_info()
+
+    #GPU Metrics
     metrics["gpu_usage"]=get_intel_gpu_usage_percent()
-    metrics["active_process"]=len(p.pids())
+    metrics["gpu_temp"]=get_system_temperature_celsius()
+
+    #DISK Metrics
     metrics["disk_space"]=p.disk_usage("C:\\").percent
-    metrics["disk_read"]=p.disk_io_counters().read_bytes
-    metrics["disk_write"]=p.disk_io_counters().write_bytes
-    metrics["network_sent"]=p.net_io_counters().bytes_sent
-    metrics["network_received"]=p.net_io_counters().bytes_recv
-    metrics["system_temp"]=get_system_temperature_celsius()
+    metrics["disk_read_bytes"]=(current_disk_read_bytes-get_metrics.last_disk_read_bytes)/dt
+    metrics["disk_write_bytes"]=(current_disk_write_bytes-get_metrics.last_disk_write_bytes)/dt
+    metrics["disk_read_ops"]=(current_disk_read_ops-get_metrics.last_disk_read_ops)/dt
+    metrics["disk_write_ops"]=(current_disk_write_ops-get_metrics.last_disk_write_ops)/dt
+    
+    #NETWORK Metrics
+    metrics["network_sent_bytes"]=(current_network_sent_bytes-get_metrics.last_network_sent_bytes)/dt
+    metrics["network_received_bytes"]=(current_network_rec_bytes-get_metrics.last_network_rec_bytes)/dt
+    metrics["network_sent_packet"]=(current_network_sent_packet-get_metrics.last_network_sent_packet)/dt
+    metrics["network_received_packet"]=(current_network_rec_packet-get_metrics.last_network_rec_packet)/dt
+    metrics["Tcp_connections"]=len(p.net_connections(kind="tcp"))
+
+    #PROCESS Metrics
+    metrics["active_process"]=len(p.pids())
+
+
+    get_metrics.last_interrupts_per_sec = current_interrupts_per_sec
+    get_metrics.last_cpu_contx_switch = current_cpu_contx_switch
+    get_metrics.last_disk_read_bytes = current_disk_read_bytes
+    get_metrics.last_disk_write_bytes = current_disk_write_bytes
+    get_metrics.last_disk_read_ops = current_disk_read_ops
+    get_metrics.last_disk_write_ops = current_disk_write_ops
+    get_metrics.last_network_sent_bytes = current_network_sent_bytes
+    get_metrics.last_network_rec_bytes = current_network_rec_bytes
+    get_metrics.last_network_sent_packet = current_network_sent_packet
+    get_metrics.last_network_rec_packet = current_network_rec_packet
+    get_metrics.last_time = current_time
+    get_metrics.last_time=current_time
 
     return metrics
+
+print(get_metrics())
 
 
 
