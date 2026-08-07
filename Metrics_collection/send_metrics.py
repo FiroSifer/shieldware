@@ -13,4 +13,4 @@ while True:
         print("server off waiting 5 second")
     except Exception as e :
         print("unexpetd error accured",e)    
-    time.sleep(5)        
+    time.sleep(0.5)        

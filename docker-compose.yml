@@ -2,6 +2,8 @@ services:
   backend:
     container_name: backend
     build: ./Backend
+    volumes:
+      - ./Backend:/Backend_app  
     ports:
       - "8000:8000"
       
@@ -10,5 +12,7 @@ services:
     build: ./Frontend
     depends_on:
       - backend
+    volumes:
+      - ./Frontend:/usr/share/nginx/html  
     ports:
       - "80:80"  

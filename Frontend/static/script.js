@@ -18,22 +18,29 @@ const disk_rec = document.getElementById("disk_rec");
 
 const pids = document.getElementById("pids");
 
-socket.onmessage = function(event){
-let m = JSON.parse(event.data);
+socket.onmessage = function (event) {
+  console.log("WEBSOCKET DATA:", event.data);
 
-cpu.textContent = m.cpu_usage;
+  let latest_data = JSON.parse(event.data);
 
-gpu.textContent = m.gpu_usage;
+  console.log("PARSED DATA:", latest_data);
+  console.log("PREDICTION:", latest_data.predicted);
 
-ram.textContent = m.ram_usage;
 
-Temp.textContent = m.system_temp;
+  let m = latest_data.metrics || {};
+  let predict = latest_data.predicted || {};
 
-net_sent.textContent = m.network_sent;
-net_rec.textContent = m.network_received;
+  // Fallback to '--' if key is missing or undefined
+  if (cpu) cpu.textContent = m.cpu_usage ?? "--";
+  if (gpu) gpu.textContent = m.gpu_usage ?? "--";
+  if (ram) ram.textContent = m.ram_usage ?? "--";
+  if (Temp) Temp.textContent = m.cpu_temp ?? "--";
 
-disk.textContent = m.disk_space;
-disk_sent.textContent = m.disk_write;
-disk_rec.textContent = m.disk_read;
+  if (net_sent) net_sent.textContent = m.network_sent_bytes ?? "--";
+  if (net_rec) net_rec.textContent = m.network_received_bytes ?? "--";
 
-pids.textContent = m.active_process;}
+  if (disk) disk.textContent = m.disk_space ?? "--";
+  if (disk_sent) disk_sent.textContent = m.disk_write_bytes ?? "--";
+  if (disk_rec) disk_rec.textContent = m.disk_read_bytes ?? "--";
+  if (pids) pids.textContent = predict?.pred ?? "wait";
+};

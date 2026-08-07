@@ -9,7 +9,7 @@ collector = subprocess.Popen([sys.executable, "Metrics_collection/send_metrics.p
 time.sleep(10)
 
 # Start Docker Compose (Backend + Frontend)
-docker = subprocess.Popen(["docker", "compose", "up","--build"])
+docker = subprocess.Popen(["docker", "compose", "up"])
 
 try:
     # Wait until Docker Compose exits

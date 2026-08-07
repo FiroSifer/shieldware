@@ -1,2 +1,7 @@
 fastapi
+websockets
+tensorflow-cpu
+scikit-learn
+joblib
+numpy
 uvicorn[standard]
