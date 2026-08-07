@@ -62,7 +62,7 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             # Stream combined telemetry + prediction to the frontend dashboard
             await websocket.send_json(dict(latest_data))
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.1)
     except WebSocketDisconnect:
         print("Client disconnected from WebSocket")
 
