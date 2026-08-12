@@ -12,7 +12,7 @@ def init_database():
     cursor = conn.cursor()
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXIST devices (
+        CREATE TABLE IF NOT EXISTS devices (
         device_id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         type TEXT NOT NULL,

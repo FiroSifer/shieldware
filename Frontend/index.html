@@ -1,55 +1,185 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>PC MONITORING DASHBOARD</title>
-        <link rel="stylesheet" href="static/style.css">
-    </head>
-    <body>
-        <h1>PC Monitoring</h1>
-        <div class="dashboard">
-            <div  class="card">
-                <h2 class="card_name">CPU</h2>
-                <p id="cpu_usage" class="card_value">0%</p>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shieldware | Architeo</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Professional Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- 1. SPLASH SCREEN (Animation) -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="logo-mark">
+                    <div class="logo-slash"></div>
+                    <div class="logo-shield">{</div>
+                </div>
             </div>
-            <div  class="card">
-                <h2 class="card_name">GPU</h2>
-                <p id="gpu_usage" class="card_value">0%</p>
-            </div>
-            <div  class="card">
-                <h2 class="card_name">RAM</h2>
-                <p id="ram_usage" class="card_value">0%</p>
-            </div>
-            <div  class="card">
-                <h2 class="card_name">TEMP</h2>
-                <p id="sys_temp" class="card_value">0%</p>
-            </div>
-            <div  class="card">
-                <h2 class="card_name">NETs</h2>
-                <p id="net_sent" class="card_value">0%</p>
-            </div>
-            <div  class="card">
-                <h2 class="card_name">NETr</h2>
-                <p id="net_rec" class="card_value">0%</p>
-            </div>
-            <div  class="card">
-                <h2 class="card_name">DISK</h2>
-                <p id="disk_usage" class="card_value">0%</p>
-            </div>
-            <div  class="card">
-                <h2 class="card_name">DISKs</h2>
-                <p id="disk_sent" class="card_value">0%</p>
-            </div>
-            <div  class="card">
-                <h2 class="card_name">DISKr</h2>
-                <p id="disk_rec" class="card_value">0%</p>
-            </div>
-            <div  class="card">
-                <h2 class="card_name">pids</h2>
-                <p id="pids" class="card_value">0%</p>
+            <div class="splash-text">
+                <h1>architeo</h1>
+                <p>TO YOUR SUCCESS</p>
             </div>
         </div>
-        <script src="static/script.js"></script>
-    </body>
+    </div>
+
+    <!-- 2. LOGIN SCREEN -->
+    <div id="login-view" class="hidden">
+        <!-- Background decorative waves -->
+        <div class="bg-waves"></div>
+        
+        <!-- Skeuomorphic Login Panel -->
+        <div class="neu-panel login-panel">
+            <div class="logo-mark center-logo mb-2">
+                <div class="logo-slash"></div>
+                <div class="logo-shield">{</div>
+            </div>
+            <h2 class="text-center mb-4">System Login</h2>
+            
+            <form id="login-form">
+                <div class="neu-input-group mb-3">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="username" class="neu-input" placeholder="Username" required>
+                </div>
+                <div class="neu-input-group mb-4">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" class="neu-input" placeholder="Password" required>
+                </div>
+                <button type="submit" class="neu-btn-primary w-100">AUTHENTICATE</button>
+                
+                <!-- NEW CLEAN ERROR MESSAGE -->
+                <div id="login-error" class="hidden" style="color: var(--arch-red); text-align: center; margin-top: 15px; font-weight: 600; font-size: 0.9rem;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. MAIN APP LAYOUT -->
+    <div id="app-layout" class="hidden">
+        
+        <!-- Top Centered Logo -->
+        <header class="app-header">
+            <div class="logo-mark">
+                <div class="logo-slash"></div>
+                <div class="logo-shield">{</div>
+            </div>
+            <span class="app-title">Shieldware</span>
+        </header>
+
+        <!-- Hidden Hover Sidebar -->
+        <nav class="hover-sidebar">
+            <div class="sidebar-handle">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <div class="sidebar-content">
+                <div class="sidebar-menu">
+                    <button class="neu-btn-icon" id="btn-show-pending" title="Add Device">
+                        <i class="fa-solid fa-satellite-dish"></i>
+                    </button>
+                </div>
+                <div class="sidebar-bottom">
+                    <button class="neu-btn-icon text-danger" id="btn-logout" title="Logout">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            
+            <!-- Empty State (Big + Button) -->
+            <div id="empty-state" class="empty-container">
+                <button class="neu-btn-massive" id="btn-add-initial">
+                    <i class="fa-solid fa-plus icon-plus"></i>
+                    <span class="hover-text">Add Device</span>
+                </button>
+            </div>
+
+            <!-- Devices Grid (2 per row) -->
+            <div id="devices-grid" class="devices-grid hidden">
+                <!-- Javascript will inject Neumorphic Device Cards here -->
+            </div>
+
+        </main>
+
+        <!-- 4. PENDING DEVICES MODAL -->
+        <div id="pending-modal" class="modal-overlay hidden">
+            <div class="neu-panel modal-content">
+                <div class="modal-header">
+                    <h3>Pending Connections</h3>
+                    <button class="neu-btn-icon small-btn close-modal"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="pending-list" id="pending-list">
+                    <!-- Example Pending Item -->
+                    <div class="pending-item neu-inset-panel">
+                        <div class="device-info">
+                            <strong>SRV-DATABASE-01</strong>
+                            <span>IP: 192.168.1.45 | Linux</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="neu-btn-action accept"><i class="fa-solid fa-check"></i></button>
+                            <button class="neu-btn-action reject"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. DEVICE DETAIL EXPANSION (The "Big Pop" View) -->
+        <div id="device-detail-overlay" class="modal-overlay hidden">
+            <div class="neu-panel detail-panel">
+                <div class="detail-header">
+                    <div>
+                        <h2 id="det-name">DEVICE-NAME</h2>
+                        <span class="ai-badge" id="det-ai-status">AI: NORMAL</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <!-- NEW DELETE BUTTON -->
+                        <button class="neu-btn-icon small-btn text-danger" id="btn-delete-device" title="Remove Device">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <button class="neu-btn-icon small-btn close-detail" title="Close">
+                            <i class="fa-solid fa-compress"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="detail-body">
+                    <!-- Control Knobs / Nav -->
+                        <div class="metric-nav">
+                        <button class="neu-tab active" data-metric="cpu"><i class="fa-solid fa-microchip"></i> CPU</button>
+                        <button class="neu-tab" data-metric="ram"><i class="fa-solid fa-memory"></i> RAM</button>
+                        <button class="neu-tab" data-metric="net"><i class="fa-solid fa-network-wired"></i> NET</button>
+                        <button class="neu-tab" data-metric="disk"><i class="fa-solid fa-hard-drive"></i> DISK</button>
+                        <button class="neu-tab" data-metric="gpu"><i class="fa-solid fa-gamepad"></i> GPU</button>
+                    </div>
+
+                    <!-- Statistics & Graphs -->
+                    <div class="graph-section neu-inset-panel">
+                        <div class="stat-highlights">
+                            <div class="neu-dial">
+                                <span class="dial-value" id="det-main-val">0%</span>
+                                <span class="dial-label">Usage</span>
+                            </div>
+                            <div class="stat-list" id="det-extra-stats">
+                                <!-- JS fills this -->
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="metricChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
 </html>
