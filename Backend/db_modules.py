@@ -67,13 +67,13 @@ def delect_device(device_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-    DELECT FROM devices
+    DELETE FROM devices
     WHERE device_id = ?
     """ , (device_id,) )
 
     conn.commit()
 
-    deleted = cursor.rawcount >0
+    deleted = cursor.rowcount >0
 
     conn.close()
 

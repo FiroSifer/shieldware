@@ -28,9 +28,9 @@ class model_service:
 
     def load_model(self) -> bool:
         try:
-            self.model = load_model("ids_mlp_model.keras")
-            self.scaler = joblib.load("scaler.joblib")
-            self.label_encoder = joblib.load("label_encoder.joblib")
+            self.model = load_model("Model_modules/ids_mlp_model.keras")
+            self.scaler = joblib.load("Model_modules/scaler.joblib")
+            self.label_encoder = joblib.load("Model_modules/label_encoder.joblib")
             return True
         except Exception as e :
             print("failed to load model")
@@ -52,7 +52,10 @@ class model_service:
         prediction_indx = int(np.argmax(prediction, axis=1)[0])
         confidence = float(np.max(prediction,axis=1)[0])
         predicted_label = self.label_encoder.inverse_transform([prediction_indx])[0]
-
+        print({
+            "pred" : str(predicted_label),
+            "confidence" : round(confidence, 4)
+        })
         return {
             "pred" : str(predicted_label),
             "confidence" : round(confidence, 4)

@@ -97,7 +97,7 @@ def start_streaming(config):
         except Exception as e:
             print(f"Temporary server disconnection: {e}")
 
-        time.sleep(1)
+        time.sleep(0.1)
 
 def main():
     config = load_config()
