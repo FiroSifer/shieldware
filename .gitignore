@@ -2,3 +2,4 @@
 Backend/__pycache__/
 Metrics_collection/__pycache__/
 Agent_app/__pycache__/
+Backend/devices.db
