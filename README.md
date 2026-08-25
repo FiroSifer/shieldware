@@ -542,9 +542,5 @@ The project demonstrates the feasibility of combining infrastructure monitoring 
 
 ---
 
-# License
 
-This project is intended primarily for educational, research, and internship purposes.
-
-Add an appropriate license here if the repository is intended to be publicly distributed, such as the MIT License.
 
